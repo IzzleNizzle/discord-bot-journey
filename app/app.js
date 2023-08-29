@@ -2,13 +2,11 @@ const utilsJs = require('./utils.js')
 const discordInteractions = require('discord-interactions')
 const express = require('express')
 const axios = require('axios');
-
-const { Configuration, OpenAIApi } = require("openai");
-const configuration = new Configuration({
+const { OpenAI } = require("openai");
+const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
-
+const PORT = process.env.PORT || 3000
 
 const app = express()
 app.use(express.json({ verify: utilsJs.VerifyDiscordRequest(process.env.DISCORD_PUBLIC_KEY) }));
@@ -144,8 +142,8 @@ ${response.data.choices[0].message.content}`,
     }
 });
 
-app.listen(3000, function () {
-    console.log("App started")
+app.listen(PORT, function () {
+    console.log(`app listening on port ${PORT}!`)
 });
 
 
