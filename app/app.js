@@ -11,7 +11,7 @@ const openai = new OpenAIApi(configuration);
 
 
 const app = express()
-app.use(express.json({ verify: utilsJs.VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
+app.use(express.json({ verify: utilsJs.VerifyDiscordRequest(process.env.DISCORD_PUBLIC_KEY) }));
 
 
 app.use(function (req, res, next) {
