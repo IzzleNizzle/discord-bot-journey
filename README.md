@@ -2,6 +2,7 @@
 Practicing discord bot features
 
 
+[XC Tasks](https://github.com/joerdav/xc)
 ## Tasks
 
 ### main-build-push-test-env
