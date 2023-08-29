@@ -1,8 +1,6 @@
 const utilsJs = require('./utils.js')
 const discordInteractions = require('discord-interactions')
 const express = require('express')
-const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const axios = require('axios');
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -14,7 +12,6 @@ const openai = new OpenAIApi(configuration);
 
 const app = express()
 app.use(express.json({ verify: utilsJs.VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
-app.use(awsServerlessExpressMiddleware.eventContext())
 
 
 app.use(function (req, res, next) {
