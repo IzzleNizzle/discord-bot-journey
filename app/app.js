@@ -20,6 +20,7 @@ app.use(function (req, res, next) {
 
 
 app.get('/health', function (req, res) {
+    console.log('health');
     res.json({ success: 'healthy!', url: req.url });
 });
 
