@@ -1,9 +1,22 @@
-function groupNames(names, numGroups) {
-    // Shuffle the array of names
-    for (let i = names.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [names[i], names[j]] = [names[j], names[i]]; // Swap elements
+function shuffle(array) {
+    let currentIndex = array.length;
+    let randomIndex;
+    let newArray = [];
+
+    while (currentIndex > 0) {
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [newArray[currentIndex], newArray[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
     }
+    return newArray;
+}
+
+function groupNames(names, numGroups) {
+    names = shuffle(names);
 
     const groupSize = Math.floor(names.length / numGroups);
     const groups = [];
@@ -27,8 +40,4 @@ function groupNames(names, numGroups) {
     return groups;
 }
 
-// Test the function
-const names = ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Helen"];
-const numGroups = 3;
-const groupedNames = groupNames(names, numGroups);
-console.log(groupedNames);
+module.exports = groupNames;
