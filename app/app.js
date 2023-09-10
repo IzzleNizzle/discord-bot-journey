@@ -8,6 +8,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 const PORT = process.env.PORT || 3000
+const { splitNames, teamsToString, groupNames } = require('./random-team-gen.js');
 
 const app = express()
 app.use(express.json({ verify: utilsJs.VerifyDiscordRequest(process.env.DISCORD_PUBLIC_KEY) }));
@@ -141,6 +142,19 @@ ${response.data.choices[0].message.content}`,
                 type: discordInteractions.InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
                     content: 'Pong!',
+                },
+            });
+        }
+        if (name === 'random-team') {
+            console.log(`options: ${JSON.stringify(options)}`);
+            const names = splitNames(options[0].value);
+            const numGroups = options[1].value;
+            const result = groupNames(names, numGroups);
+            return res.send({
+                type: discordInteractions.InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                    content: `Random-Team! 🎲🔀
+${teamsToString(result)}`,
                 },
             });
         }
