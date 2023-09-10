@@ -23,6 +23,52 @@ describe('groupNames', () => {
         // However, in practice, it's highly unlikely for larger arrays
         expect(result).not.toEqual(names);
     });
+
+
+    it('does not duplicate names in the result', () => {
+        const names = ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Helen"];
+        const numGroups = 3;
+        const groupedNames = groupNames(names, numGroups);
+
+        // Flatten the grouped array
+        const allNames = [].concat(...groupedNames);
+
+        // Check for duplicates
+        const hasDuplicates = allNames.some((name, index) => allNames.indexOf(name) !== index);
+        expect(hasDuplicates).toBe(false);
+    });
+});
+
+
+describe('shuffle function', () => {
+    it('returns an array of the same length', () => {
+        const array = [1, 2, 3, 4, 5];
+        const shuffled = shuffle(array);
+        expect(shuffled.length).toBe(array.length);
+    });
+
+    it('returns an array with the same elements', () => {
+        const array = [1, 2, 3, 4, 5];
+        const shuffled = shuffle(array);
+        expect(shuffled).toEqual(expect.arrayContaining(array));
+        expect(array).toEqual(expect.arrayContaining(shuffled));
+    });
+
+    it('does not duplicate items in the shuffled array', () => {
+        const array = [1, 2, 3, 4, 5];
+        const shuffled = shuffle(array);
+        const uniqueItems = new Set(shuffled);
+        expect(uniqueItems.size).toBe(shuffled.length);
+    });
+
+    it('returns a shuffled array (probabilistic)', () => {
+        const array = [1, 2, 3, 4, 5];
+        const shuffled1 = shuffle([...array]);
+        const shuffled2 = shuffle([...array]);
+        // This test might fail occasionally due to the probabilistic nature of shuffling
+        // but for most cases, two consecutive shuffles should be different
+        expect(shuffled1).not.toEqual(shuffled2);
+    });
 });
 
 describe('splitNames function', () => {
