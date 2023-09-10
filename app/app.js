@@ -2,10 +2,11 @@ const utilsJs = require('./utils.js')
 const discordInteractions = require('discord-interactions')
 const express = require('express')
 const axios = require('axios');
-const { OpenAI } = require("openai");
-const openai = new OpenAI({
+const { Configuration, OpenAIApi } = require("openai");
+const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
+const openai = new OpenAIApi(configuration);
 const PORT = process.env.PORT || 3000
 
 const app = express()
@@ -58,9 +59,8 @@ app.post('/discordgpt/interactions', async function (req, res) {
                 let quickPayload = {
                     type: discordInteractions.InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
                 };
-                // axios post request
                 let quickUrl = `https://discord.com/api/v10/interactions/${id}/${token}/callback`
-                const quickAxiosOptions = {
+                const quickDiscordResponse = {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
@@ -70,29 +70,19 @@ app.post('/discordgpt/interactions', async function (req, res) {
                     data: JSON.stringify(quickPayload),
                     url: quickUrl,
                 };
-                axios(quickAxiosOptions)
+                axios(quickDiscordResponse)
                     .then(function (response) {
-                        console.log(`quick discordRes: ${response}`);
+                        console.log(`quick discordRes: ${typeof response}`);
                     })
                     .catch(function (error) {
                         console.log(`quick err: ${error}`);
                         if (error.response) {
-                            console.log(error.response.status);
-                            console.log(error.response.data);
+                            console.log(`quick err: ${error.response.status}`);
+                            console.log(`quick err: ${JSON.stringify(error.response.data)}`);
                         } else {
-                            console.log(error.message);
+                            console.log(`quick err: ${error.message}`);
                         }
                     });
-
-
-
-
-
-
-
-
-
-
                 const response = await openai.createChatCompletion({
                     model: "gpt-3.5-turbo",
                     messages: [
@@ -100,11 +90,9 @@ app.post('/discordgpt/interactions', async function (req, res) {
                         { "role": "user", "content": options[0].value }
                     ]
                 })
-
-                console.log(`openai.createChatCompletion: ${response}`);
-                console.log('before');
                 // axios post request
                 let url = `https://discord.com/api/v10/webhooks/${application_id}/${discord_webhook_token}`
+                console.log(`url: ${url}`);
                 const axiosOptions = {
                     method: 'POST',
                     headers: {
@@ -119,18 +107,28 @@ ${response.data.choices[0].message.content}`,
                     }),
                     url,
                 };
-                const gptResponse = await axios(axiosOptions)
-                console.log(`gptResponse: ${gptResponse}`);
+                try {
+                    const gptResponse = await axios(axiosOptions)
+                    console.log(`gptResponse: ${gptResponse}`);
+
+                } catch (error) {
+                    console.log(`gptresponse error: ${error}`);
+                    if (error.response) {
+                        console.log(`gptresponse error: ${error.response.status}`);
+                        console.log(`gptresponse error: ${JSON.stringify(error.response.data)}`);
+                    } else {
+                        console.log(`gptresponse error: ${error.message}`);
+                    }
+                }
                 return res.send(200);
 
-                console.log('after');
-
             } catch (error) {
+                console.log(`gpt try: ${error}`);
                 if (error.response) {
-                    console.log(error.response.status);
-                    console.log(error.response.data);
+                    console.log(`quick err: ${error.response.status}`);
+                    console.log(`quick err: ${JSON.stringify(error.response.data)}`);
                 } else {
-                    console.log(error.message);
+                    console.log(`quick err: ${error.message}`);
                 }
                 return res.send({
                     type: discordInteractions.InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
