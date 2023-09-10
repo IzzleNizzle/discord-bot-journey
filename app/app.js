@@ -138,6 +138,84 @@ ${response.data.choices[0].message.content}`,
                 });
             }
         }
+
+        if (name === 'ping') {
+
+            try {
+                // quick response
+                let quickPayload = {
+                    type: discordInteractions.InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+                };
+                let quickUrl = `https://discord.com/api/v10/interactions/${id}/${token}/callback`
+                const quickDiscordResponse = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+                        'User-Agent': 'DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)',
+                    },
+                    data: JSON.stringify(quickPayload),
+                    url: quickUrl,
+                };
+                axios(quickDiscordResponse)
+                    .then(function (response) {
+                        console.log(`quick discordRes: ${typeof response}`);
+                    })
+                    .catch(function (error) {
+                        console.log(`quick err: ${error}`);
+                        if (error.response) {
+                            console.log(`quick err: ${error.response.status}`);
+                            console.log(`quick err: ${JSON.stringify(error.response.data)}`);
+                        } else {
+                            console.log(`quick err: ${error.message}`);
+                        }
+                    });
+                await utilsJs.sleep(1000);
+                // axios post request
+                let url = `https://discord.com/api/v10/webhooks/${application_id}/${discord_webhook_token}`
+                console.log(`url: ${url}`);
+                const axiosOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+                        'User-Agent': 'DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)',
+                    },
+                    data: JSON.stringify({
+                        content: `Pong!`,
+                    }),
+                    url,
+                };
+                try {
+                    const gptResponse = await axios(axiosOptions)
+                    console.log(`gptResponse: ${gptResponse}`);
+                } catch (error) {
+                    console.log(`gptresponse error: ${error}`);
+                    if (error.response) {
+                        console.log(`gptresponse error: ${error.response.status}`);
+                        console.log(`gptresponse error: ${JSON.stringify(error.response.data)}`);
+                    } else {
+                        console.log(`gptresponse error: ${error.message}`);
+                    }
+                }
+                return res.sendStatus(200);
+
+            } catch (error) {
+                console.log(`gpt try: ${error}`);
+                if (error.response) {
+                    console.log(`quick err: ${error.response.status}`);
+                    console.log(`quick err: ${JSON.stringify(error.response.data)}`);
+                } else {
+                    console.log(`quick err: ${error.message}`);
+                }
+                return res.send({
+                    type: discordInteractions.InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                    data: {
+                        content: 'error running command ',
+                    },
+                });
+            }
+        }
     }
 });
 
