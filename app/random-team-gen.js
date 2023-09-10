@@ -1,3 +1,16 @@
+function splitNames(input) {
+    // If the input is an empty string, return an empty array
+    if (!input.trim()) {
+        return [];
+    }
+
+    // Split the string by comma or one or more spaces
+    let names = input.split(/[\s,]+/);
+
+    // Trim each name in the resulting array and filter out any empty strings
+    return names.map(name => name.trim()).filter(name => name !== '');
+}
+
 function shuffle(array) {
     let currentIndex = array.length;
     let randomIndex;
@@ -40,4 +53,4 @@ function groupNames(names, numGroups) {
     return groups;
 }
 
-module.exports = groupNames;
+module.exports = { splitNames, shuffle, groupNames, };
