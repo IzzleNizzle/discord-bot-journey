@@ -1,4 +1,4 @@
-const { splitNames, shuffle, groupNames } = require('./random-team-gen.js');
+const { splitNames, shuffle, groupNames, teamsToString } = require('./random-team-gen.js');
 
 describe('groupNames', () => {
     it('should group names into specified number of groups', () => {
@@ -48,5 +48,31 @@ describe('splitNames function', () => {
 
     it('returns an empty array for an empty string', () => {
         expect(splitNames('')).toEqual([]);
+    });
+});
+
+
+describe('teamsToString function', () => {
+    it('converts a 2D array of teams to a human-readable string', () => {
+        const teams = [["john"], ["john", "billy"]];
+        const expected = "Team 1: john\nTeam 2: john, billy";
+        expect(teamsToString(teams)).toBe(expected);
+    });
+
+    it('handles single team', () => {
+        const teams = [["john", "billy"]];
+        const expected = "Team 1: john, billy";
+        expect(teamsToString(teams)).toBe(expected);
+    });
+
+    it('handles multiple teams with multiple members', () => {
+        const teams = [["john", "billy"], ["alice", "eve", "grace"]];
+        const expected = "Team 1: john, billy\nTeam 2: alice, eve, grace";
+        expect(teamsToString(teams)).toBe(expected);
+    });
+
+    it('returns an empty string for an empty array', () => {
+        const teams = [];
+        expect(teamsToString(teams)).toBe('');
     });
 });

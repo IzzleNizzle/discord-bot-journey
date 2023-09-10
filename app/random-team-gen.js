@@ -1,3 +1,9 @@
+function teamsToString(teams) {
+    return teams.map((team, index) => {
+        return `Team ${index + 1}: ${team.join(', ')}`;
+    }).join('\n');
+}
+
 function splitNames(input) {
     // If the input is an empty string, return an empty array
     if (!input.trim()) {
@@ -53,4 +59,4 @@ function groupNames(names, numGroups) {
     return groups;
 }
 
-module.exports = { splitNames, shuffle, groupNames, };
+module.exports = { splitNames, shuffle, groupNames, teamsToString };
