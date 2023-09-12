@@ -26,6 +26,20 @@ app.get('/health', function (req, res) {
     res.json({ success: 'healthy!', url: req.url });
 });
 
+// Middleware function
+const myMiddleware = (req, res, next) => {
+    // Do something before the route handler
+    console.log('Middleware executed');
+
+    // Call the next middleware or route handler
+    next();
+};
+
+app.get('/middleware-test', myMiddleware, function (req, res) {
+    console.log('middleware-test');
+    res.json({ success: 'middleware-testy!', url: req.url });
+});
+
 app.post('/discordgpt/interactions', async function (req, res) {
     console.log('interactionsHandler');
     // Interaction type and data
